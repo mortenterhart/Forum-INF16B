@@ -147,7 +147,7 @@
     // they decide which kind of postings to load from the database. Therefore
     // all the parameters are checked against an inequality of `null`.
     if (searchTermString != null && minDateString != null && maxDateString != null &&
-            tagString != null && forumIdString != null && myPostingString != null && myPosting) {
+            tagString != null && forumIdString != null && myPostingString != null) {
         // Extended Search Request
         extendedSearchRequest (searchTermString, forumId, tag, minDate, maxDate, myPosting);
         logMessage ("Activated extended search request");
