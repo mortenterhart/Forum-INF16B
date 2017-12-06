@@ -213,7 +213,7 @@
      * Applies the given parameters as query to the database object and selects
      * the posts matching the criteria
      * @param searchTerm the string that is searched after
-     * @param forumId the identifier of thfe forum which is searched in
+     * @param forumId the identifier of the forum which is searched in
      * @param tag the identifier of the tag the posts must contain
      * @param minDate the minimal date specifying the lower border of creation date
      * @param maxDate the maximal date specifying the upper border of creation date
@@ -262,7 +262,7 @@
      * criteria (postings with a high rating)
      */
     private void selectPopularPostings() {
-        postSelection = databaseObject.getPopularPostings();
+        postSelection = databaseObject.getPopularPostings ();
     }
 
     /**
@@ -321,7 +321,7 @@
         <%-- Set a link to the posting itself over the whole block --%>
         <a href="${pathPrefix}/posting.jsp?postid=${currentPost.getId()}">
             <div class="post">
-                    <%-- Profile Image and Author Name both with a link to the profile --%>
+                <%-- Profile Image and Author Name both with a link to the profile --%>
                 <a href="${pathPrefix}/profil.jsp?userid=${author.getId()}">
                     <div class="profilbild">
                         <img src="<c:url value="${author.getImgUrl()}" />" height="60" width="60"/>
@@ -329,8 +329,8 @@
                     <span class="author"> ${author.getFirstname()} ${author.getLastname()} </span>
                 </a>
 
-                    <%-- Postings Body with breadcrumbs, creation date,
-                         subject title, short message and tags attached to it --%>
+                <%-- Postings Body with breadcrumbs, creation date,
+                     subject title, short message and tags attached to it --%>
                 <div>
                     <a href="${pathPrefix}/forumlist.jsp">
                         <div>INF16B &gt; Mathe</div>
@@ -343,7 +343,7 @@
 
                     <p>${currentPost.getMessage()}</p>
 
-                        <%-- For-Each-Loop to output all attached tags --%>
+                    <%-- For-Each-Loop to output all attached tags --%>
                     <c:forEach items="${currentPost.getTags()}" var="tag">
                         <a href="${pathPrefix}/postings.jsp?tag=${tag}">
                             <span class="tagbox">${tag}</span>
