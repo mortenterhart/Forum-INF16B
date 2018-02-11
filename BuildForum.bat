@@ -1,11 +1,12 @@
+:: Disable echoing all commands with a prompt
+@echo off
+
 ::    @author Morten Terhart
 ::    * Creation Date: 26.10.17
 ::
 ::    * Script for automatic compilation of Java source files and reporting the results
 ::    * Includes a lot of safety checks for requirements
 
-:: Disable echoing all commands with a prompt
-@echo off
 
 :: Evaluate variables within exclamation marks at the time of execution,
 :: not on parsing
@@ -16,6 +17,7 @@ set filename=%~nx0
 set dirname=%~dp0
 set usage_message="usage: %filename% [-h | --help]"
 set webapp_name=Forum-INF16B
+set java_source_directory=src\de\dhbw\StudentForum
 set /A "exit_status=0"
 
 set display_usage=true
@@ -66,7 +68,7 @@ IF EXIST "WEB-INF" (
 	where /Q javac
 	IF ERRORLEVEL 0 IF NOT ERRORLEVEL 1 (
 		echo | set /p dummy=[%webapp_name%]: Looking after Java sources in 'WEB-INF\src' ...
-		IF EXIST "src\User.java" (
+		IF EXIST "%java_source_directory%\User.java" (
 			echo  found^^!
 			echo.
 
@@ -74,7 +76,7 @@ IF EXIST "WEB-INF" (
 			set erroneous_files[0]=
 			echo [%webapp_name%]: Compiling Java sources in 'WEB-INF\src'.
 
-			FOR %%J IN (.\src\*.java) DO (
+			FOR %%J IN (.\%java_source_directory%\*.java) DO (
 				echo [%webapp_name%]: Compiling %%J ...
 				javac -cp "lib/*;classes" -encoding "UTF-8" -d "classes" -Xlint:static %%J
 				IF ERRORLEVEL 1 (

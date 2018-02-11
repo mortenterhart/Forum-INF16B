@@ -8,6 +8,7 @@
 # Define script constants
 usage_message="usage: ./${0##*/} [-h | --help]";
 webapp_name="Forum-INF16B";
+java_source_directory="src/de/dhbw/StudentForum";
 exit_status=0;
 
 # If standard output (file descriptor 1) is directed to a terminal
@@ -75,12 +76,12 @@ if [ -d "WEB-INF" ]; then
 	printf "[%s]: Checking if the Java compiler is correctly installed.\n" "${webapp_name}";
 	if type javac &> /dev/null; then
 		printf "[%s]: Looking after Java sources in 'WEB-INF/src' ..." "${webapp_name}";
-		if [ -f "src/User.java" ]; then
+		if [ -f "${java_source_directory}/User.java" ]; then
 			printf " found!\n\n";
 
 			declare -a erroneous_files=();
 			printf "[%s]: Compiling Java sources in 'WEB-INF/src'.\n" "${webapp_name}";
-			for java_source in src/*.java
+			for java_source in "${java_source_directory}"/*.java
 			do
 				printf "[%s]: Compiling %s ...\n" "${webapp_name}" "${java_source}";
 				javac -cp "lib/*:classes" -encoding "UTF-8" -d classes -Xlint:static "${java_source}";
