@@ -1,42 +1,40 @@
 <!-- @author Marco Dauber, Philipp Seitz, Morten Terhart
-  * Displays a list of posts supplying certain filter criteria
-  * received through a GET request from the URL
+* Displays a list of posts supplying certain filter criteria
+* received through a GET request from the URL
 -->
 
 <%-- Import Declarations --%>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="java.lang.*" %>
-<%@ page import="de.dhbw.StudentForum.Posting" %>
-<%@ page import="de.dhbw.StudentForum.User" %>
 <%@ page import="de.dhbw.StudentForum.DAO" %>
+<%@ page import="de.dhbw.StudentForum.Posting" %>
+<%@ page import="java.sql.Timestamp" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.ParseException" %>
-<%@ page import="java.sql.Timestamp" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%!
     // Uniform declarations of used parameter identifiers in the URL bar
-    private static final String USER_ID_PARAMETER         = "authorid";
-    private static final String LATEST_PARAMETER          = "latest";
-    private static final String SEARCH_TERM_PARAMETER     = "searchterm";
-    private static final String MAX_POSTINGS_PARAMETER    = "maxpostings";
-    private static final String FORUM_ID_PARAMETER        = "forumid";
-    private static final String TAG_ID_PARAMETER          = "tag";
-    private static final String MIN_DATE_PARAMETER        = "mindate";
-    private static final String MAX_DATE_PARAMETER        = "maxdate";
-    private static final String MY_POSTING_PARAMETER      = "myposting";
-    private static final String POPULAR_POSTS_PARAMETER   = "popular";
+    private static final String USER_ID_PARAMETER = "authorid";
+    private static final String LATEST_PARAMETER = "latest";
+    private static final String SEARCH_TERM_PARAMETER = "searchterm";
+    private static final String MAX_POSTINGS_PARAMETER = "maxpostings";
+    private static final String FORUM_ID_PARAMETER = "forumid";
+    private static final String TAG_ID_PARAMETER = "tag";
+    private static final String MIN_DATE_PARAMETER = "mindate";
+    private static final String MAX_DATE_PARAMETER = "maxdate";
+    private static final String MY_POSTING_PARAMETER = "myposting";
+    private static final String POPULAR_POSTS_PARAMETER = "popular";
     private static final String DISPLAY_HEADING_PARAMETER = "displayheader";
-    private static final String ADD_JSP_PATH_PARAMETER    = "addjsppath";
+    private static final String ADD_JSP_PATH_PARAMETER = "addjsppath";
 
     // Object instance to get access to the database
-    private DAO databaseObject = new DAO ();
+    private DAO databaseObject = new DAO();
 
     // Collection of retrieved postings to iterate over
     // to display as list overview
-    private List<Posting> postSelection = new ArrayList<> ();
+    private List<Posting> postSelection = new ArrayList<>();
 %>
 
 <%
@@ -61,84 +59,84 @@
 
 <%
     // Dummy elements to test the correct displaying
-    Posting p1 = new Posting (0);
-    p1.setUserId (1);
-    p1.setTitle ("Brauche Hilfe bei Doppelintegralen in Mathe");
-    p1.setWhenPosted (new Timestamp (0L));
-    String[] tags1 = {"Mathe", "Integral"};
-    p1.setTags (tags1);
-    p1.setMessage ("Beschreibung");
-    postSelection.add (p1);
+    Posting p1 = new Posting(0);
+    p1.setUserId(1);
+    p1.setTitle("Brauche Hilfe bei Doppelintegralen in Mathe");
+    p1.setWhenPosted(new Timestamp(0L));
+    String[] tags1 = { "Mathe", "Integral" };
+    p1.setTags(tags1);
+    p1.setMessage("Beschreibung");
+    postSelection.add(p1);
 %>
 
 <%
     // --- Parameter Handling ---
     // Accessing the Parameters via the request
-    String tagString           = request.getParameter (TAG_ID_PARAMETER);
-    String authorIdString      = request.getParameter (USER_ID_PARAMETER);
-    String forumIdString       = request.getParameter (FORUM_ID_PARAMETER);
-    String latestString        = request.getParameter (LATEST_PARAMETER);
-    String maxPostingsString   = request.getParameter (MAX_POSTINGS_PARAMETER);
-    String searchTermString    = request.getParameter (SEARCH_TERM_PARAMETER);
-    String minDateString       = request.getParameter (MIN_DATE_PARAMETER);
-    String maxDateString       = request.getParameter (MAX_DATE_PARAMETER);
-    String myPostingString     = request.getParameter (MY_POSTING_PARAMETER);
-    String popularPostsString  = request.getParameter (POPULAR_POSTS_PARAMETER);
-    String displayHeaderString = request.getParameter (DISPLAY_HEADING_PARAMETER);
-    String jspPathString       = request.getParameter (ADD_JSP_PATH_PARAMETER);
+    String tagString = request.getParameter(TAG_ID_PARAMETER);
+    String authorIdString = request.getParameter(USER_ID_PARAMETER);
+    String forumIdString = request.getParameter(FORUM_ID_PARAMETER);
+    String latestString = request.getParameter(LATEST_PARAMETER);
+    String maxPostingsString = request.getParameter(MAX_POSTINGS_PARAMETER);
+    String searchTermString = request.getParameter(SEARCH_TERM_PARAMETER);
+    String minDateString = request.getParameter(MIN_DATE_PARAMETER);
+    String maxDateString = request.getParameter(MAX_DATE_PARAMETER);
+    String myPostingString = request.getParameter(MY_POSTING_PARAMETER);
+    String popularPostsString = request.getParameter(POPULAR_POSTS_PARAMETER);
+    String displayHeaderString = request.getParameter(DISPLAY_HEADING_PARAMETER);
+    String jspPathString = request.getParameter(ADD_JSP_PATH_PARAMETER);
 
     // Validating and parsing the parameters to the consigned
     // data types such as integer, boolean or dates
-    DateFormat format = DateFormat.getDateInstance ();
+    DateFormat format = DateFormat.getDateInstance();
     try {
         if (authorIdString != null) {
-            authorId = Integer.parseInt (authorIdString);
+            authorId = Integer.parseInt(authorIdString);
         }
         if (forumIdString != null) {
-            forumId = Integer.parseInt (forumIdString);
+            forumId = Integer.parseInt(forumIdString);
         }
         if (maxPostingsString != null) {
-            maxPostings = Integer.parseInt (maxPostingsString);
+            maxPostings = Integer.parseInt(maxPostingsString);
         }
         if (latestString != null) {
-            latest = Boolean.parseBoolean (latestString);
+            latest = Boolean.parseBoolean(latestString);
         }
         if (minDateString != null) {
-            minDate = format.parse (minDateString);
+            minDate = format.parse(minDateString);
         }
         if (maxDateString != null) {
-            maxDate = format.parse (maxDateString);
+            maxDate = format.parse(maxDateString);
         }
         if (myPostingString != null) {
-            myPosting = Boolean.parseBoolean (myPostingString);
+            myPosting = Boolean.parseBoolean(myPostingString);
         }
         if (popularPostsString != null) {
-            popularPosts = Boolean.parseBoolean (popularPostsString);
+            popularPosts = Boolean.parseBoolean(popularPostsString);
         }
         if (displayHeaderString != null) {
-            displayHeader = Boolean.parseBoolean (displayHeaderString);
+            displayHeader = Boolean.parseBoolean(displayHeaderString);
         }
         if (jspPathString != null) {
-            addJspPath = Boolean.parseBoolean (jspPathString);
+            addJspPath = Boolean.parseBoolean(jspPathString);
         }
     } catch (NumberFormatException exc) {
-        // If exc occured, display an error message on the page
-        System.err.println ("postings.jsp: Could not perform integer parsing");
+        // If exc occurred, display an error message on the page
+        System.err.println("postings.jsp: Could not perform integer parsing");
         displayError = true;
         errorMessage = "Error occured during parsing of parameters: parameter expects an integer";
-        exceptionMessage = exc.toString ();
+        exceptionMessage = exc.toString();
 
         // Log the stack trace
-        exc.printStackTrace ();
+        exc.printStackTrace();
     } catch (ParseException exc) {
         // If this exception was thrown, display a specific error message on the page
-        System.err.println ("postings.jsp: Could not parse the date received by the request");
+        System.err.println("postings.jsp: Could not parse the date received by the request");
         displayError = true;
         errorMessage = "Error occured during parsing of parameters: invalid date format";
-        exceptionMessage = exc.toString ();
+        exceptionMessage = exc.toString();
 
         // Log the stack trace
-        exc.printStackTrace ();
+        exc.printStackTrace();
     }
 
     // Action Decision Investigation
@@ -149,41 +147,41 @@
     if (searchTermString != null && minDateString != null && maxDateString != null &&
             tagString != null && forumIdString != null && myPostingString != null) {
         // Extended Search Request
-        extendedSearchRequest (searchTermString, forumId, tag, minDate, maxDate, myPosting);
-        logMessage ("Activated extended search request");
+        extendedSearchRequest(searchTermString, forumId, tag, minDate, maxDate, myPosting);
+        logMessage("Activated extended search request");
     } else if (latestString != null && latest && maxPostingsString != null && maxPostings == 8) {
         // Top 8 Postings on the homepage
-        selectTop8Postings ();
-        logMessage ("Activated selecting latest postings");
+        selectTop8Postings();
+        logMessage("Activated selecting latest postings");
     } else if (searchTermString != null) {
         // Simple Search Request from the Header line
-        simpleSearchRequest (searchTermString);
-        logMessage ("Activated simple search request");
+        simpleSearchRequest(searchTermString);
+        logMessage("Activated simple search request");
     } else if (popularPostsString != null && popularPosts) {
         // Posts with most comments in various forums
-        selectPopularPostings ();
-        logMessage ("Activated selection of popular postings");
+        selectPopularPostings();
+        logMessage("Activated selection of popular postings");
     } else if (forumIdString != null) {
         // Postings of a specific forum
-        selectForumPostings (forumId);
-        logMessage ("Activated selecting postings of specific forum");
+        selectForumPostings(forumId);
+        logMessage("Activated selecting postings of specific forum");
     } else if (tagString != null) {
         // Postings of a specific tag
-        selectTagPostings (tag);
-        logMessage ("Activated selection of postings with a specific tag");
+        selectTagPostings(tag);
+        logMessage("Activated selection of postings with a specific tag");
     } else if (authorIdString != null) {
         // Postings of a specific user
-        selectUserPostings (authorId);
-        logMessage ("Activated selection of postings by a specific user");
+        selectUserPostings(authorId);
+        logMessage("Activated selection of postings by a specific user");
     } else {
         // If none of these use cases is matched, create an empty set
         // and display an error message
-        postSelection = new ArrayList<Posting> ();
+        postSelection = new ArrayList<Posting>();
         if (!displayError) {
             displayError = true;
             errorMessage = "Error occured during retrieving postings: Combination of parameters not " +
                     "recognized or too few supplied!";
-            System.err.println ("postings.jsp: Error while parsing parameters! Wrong combination " +
+            System.err.println("postings.jsp: Error while parsing parameters! Wrong combination " +
                     "of parameters or none supplied");
         }
     }
@@ -191,7 +189,7 @@
     // If the option `addjsppath` was applied and set to true,
     // append `/jsp` to the context path in order to find some
     // external JSP files
-    String pathPrefix = request.getContextPath ();
+    String pathPrefix = request.getContextPath();
     if (addJspPath) {
         pathPrefix += "/jsp";
     }
@@ -206,7 +204,7 @@
      * on the index page
      */
     private void selectTop8Postings() {
-        postSelection = databaseObject.getLatestPostings ();
+        postSelection = databaseObject.getLatestPostings();
     }
 
     /**
@@ -221,8 +219,8 @@
      */
     private void extendedSearchRequest(String searchTerm, int forumId, String tag, Date minDate,
                                        Date maxDate, boolean myPosting) {
-        postSelection = databaseObject.searchPostings (searchTerm, forumId, tag,
-                new java.sql.Date (minDate.getTime ()), new java.sql.Date (maxDate.getTime ()), myPosting);
+        postSelection = databaseObject.searchPostings(searchTerm, forumId, tag,
+                new java.sql.Date(minDate.getTime()), new java.sql.Date(maxDate.getTime()), myPosting);
     }
 
     /**
@@ -230,7 +228,7 @@
      * @param searchTerm the specific search term to look after
      */
     private void simpleSearchRequest(String searchTerm) {
-        postSelection = databaseObject.searchPostings (searchTerm);
+        postSelection = databaseObject.searchPostings(searchTerm);
     }
 
     /**
@@ -238,7 +236,7 @@
      * @param forumId the id of the specific forum
      */
     private void selectForumPostings(int forumId) {
-        postSelection = databaseObject.getPostingsByForum (forumId);
+        postSelection = databaseObject.getPostingsByForum(forumId);
     }
 
     /**
@@ -246,15 +244,15 @@
      * @param tag the name of the specific tag
      */
     private void selectTagPostings(String tag) {
-        postSelection = databaseObject.getPostingsByTag (tag);
+        postSelection = databaseObject.getPostingsByTag(tag);
     }
 
     /**
      * Initializes the postSelection with all postings submitted by a specific user
-     * @param userId the id of the specific user
+     * @param authorId the id of the specific user
      */
     private void selectUserPostings(int authorId) {
-        postSelection = databaseObject.getPostingsByUser (authorId);
+        postSelection = databaseObject.getPostingsByUser(authorId);
     }
 
     /**
@@ -262,7 +260,7 @@
      * criteria (postings with a high rating)
      */
     private void selectPopularPostings() {
-        postSelection = databaseObject.getPopularPostings ();
+        postSelection = databaseObject.getPopularPostings();
     }
 
     /**
@@ -270,32 +268,32 @@
      * @param message the message to log
      */
     private void logMessage(String message) {
-        System.out.println ("postings.jsp: " + message);
+        System.out.println("postings.jsp: " + message);
     }
 %>
 
 <%-- Set all required fields for the HTML view as JSP beans --%>
-<c:set var="postSelection"    value="<%= postSelection  %>"/>
-<c:set var="displayHeader"    value="<%= displayHeader  %>"/>
-<c:set var="maxPostings"      value="<%= maxPostings    %>"/>
-<c:set var="pathPrefix"       value="<%= pathPrefix     %>"/>
-<c:set var="displayError"     value="<%= displayError   %>"/>
-<c:set var="errorMessage"     value="<%= errorMessage   %>"/>
+<c:set var="postSelection" value="<%= postSelection  %>"/>
+<c:set var="displayHeader" value="<%= displayHeader  %>"/>
+<c:set var="maxPostings" value="<%= maxPostings    %>"/>
+<c:set var="pathPrefix" value="<%= pathPrefix     %>"/>
+<c:set var="displayError" value="<%= displayError   %>"/>
+<c:set var="errorMessage" value="<%= errorMessage   %>"/>
 <c:set var="exceptionMessage" value="<%= exceptionMessage %>"/>
-<c:set var="databaseObject"   value="<%= databaseObject %>"/>
-<c:set var="contextPath"      value="<%= request.getContextPath() %>"/>
+<c:set var="databaseObject" value="<%= databaseObject %>"/>
+<c:set var="contextPath" value="<%= request.getContextPath() %>"/>
 
 <%-- If an error occured, depict it here with
      a special error highlighting style       --%>
 <c:if test="${displayError}">
     <head>
-        <link rel="stylesheet" type="text/css" href="${contextPath}/css/errors.css" />
+        <link rel="stylesheet" type="text/css" href="${contextPath}/css/errors.css"/>
     </head>
     <body>
-        <div class="parse--error">
-            <p>${errorMessage}</p>
-            <p>${exceptionMessage}</p>
-        </div>
+    <div class="parse--error">
+        <p>${errorMessage}</p>
+        <p>${exceptionMessage}</p>
+    </div>
     </body>
 </c:if>
 
@@ -306,7 +304,7 @@
 </c:if>
 
 <%-- If no postings were found, output a short information. --%>
-<c:if test="${postSelection.isEmpty() && !displayError}" >
+<c:if test="${postSelection.isEmpty() && !displayError}">
     <p>No postings matching the parameters found!</p>
 </c:if>
 
@@ -321,7 +319,7 @@
         <%-- Set a link to the posting itself over the whole block --%>
         <a href="${pathPrefix}/posting.jsp?postid=${currentPost.getId()}">
             <div class="post">
-                <%-- Profile Image and Author Name both with a link to the profile --%>
+                    <%-- Profile Image and Author Name both with a link to the profile --%>
                 <a href="${pathPrefix}/profil.jsp?userid=${author.getId()}">
                     <div class="profilbild">
                         <img src="<c:url value="${author.getImgUrl()}" />" height="60" width="60"/>
@@ -329,8 +327,8 @@
                     <span class="author"> ${author.getFirstname()} ${author.getLastname()} </span>
                 </a>
 
-                <%-- Postings Body with breadcrumbs, creation date,
-                     subject title, short message and tags attached to it --%>
+                    <%-- Postings Body with breadcrumbs, creation date,
+                         subject title, short message and tags attached to it --%>
                 <div>
                     <a href="${pathPrefix}/forumlist.jsp">
                         <div>INF16B &gt; Mathe</div>
@@ -343,7 +341,7 @@
 
                     <p>${currentPost.getMessage()}</p>
 
-                    <%-- For-Each-Loop to output all attached tags --%>
+                        <%-- For-Each-Loop to output all attached tags --%>
                     <c:forEach items="${currentPost.getTags()}" var="tag">
                         <a href="${pathPrefix}/postings.jsp?tag=${tag}">
                             <span class="tagbox">${tag}</span>
